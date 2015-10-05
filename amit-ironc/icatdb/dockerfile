@@ -1,0 +1,22 @@
+FROM centos:centos7
+
+RUN yum -y update;yum clean all
+RUN yum -y install sudo epel-release;yum clean all
+
+RUN rpm -ivh http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-centos93-9.3-1.noarch.rpm
+RUN yum install postgresql93 postgresql93-server postgresql93-libs postgresql93-contrib postgresql93-devel; yum clean all
+RUN /usr/pgsql-9.3/bin/postgresql93-setup initdb
+RUN systemctl start postgresql-9.3.service
+
+RUN rpm -ivh http://dl.fedoraproject.org/pub/epel/7/x86_64/p/python-jsonschema-2.3.0-1.el7.noarch.rpm
+RUN rpm -ivh http://dl.fedoraproject.org/pub/fedora/linux/releases/21/Everything/x86_64/os/Packages/p/python-psutil-1.2.1-5.fc21.x86_64.rpm
+
+RUN wget ftp://ftp.renci.org/pub/irods/releases/4.1.6/centos7/irods-icat-4.1.6-centos7-x86_64.rpm
+RUN wget ftp://ftp.renci.org/pub/irods/releases/4.1.6/centos7/irods-database-plugin-postgres93-1.6-centos7-x86_64.rpm
+RUN wget ftp://ftp.renci.org/pub/irods/releases/4.1.6/centos7/irods-resource-4.1.6-centos7-x86_64.rpm
+
+COPY ironc1-install.sh /
+
+EXPOSE 1247
+
+ENTRYPOINT sh ironc1-install.sh
